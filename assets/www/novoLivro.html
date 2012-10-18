@@ -1,0 +1,55 @@
+<div data-role="page" id="newProduct">
+	<div data-role="header">
+		<h1>Novo Livro</h1>
+	</div>
+
+	<div data-role="content">
+		<form id="newProductForm">
+			<img width="50%" id="photoThumb"/>
+  		<input type="button" value="Take Photo" onclick="takePhoto()" />
+  		<input type="hidden" name="product[photo]" id="productPhoto" />
+	    <input type="text" name="product[title]" placeholder="Title" id="productTitle" value="" />
+			<!-- <input type="button" value="Scan Barcode" onclick="scanBarcode()" /> -->
+			<!-- <input type="text" name="product[bar_code]" placeholder="Barcode" id="productBarcode" value="" /> -->
+	    <input type="hidden" name="base64" value="true" />
+			<input type="button" value="Save" onclick="saveProduct()"/>
+		</form>
+	</div>
+
+	<script type="text/javascript">
+		function takePhoto() {
+			navigator.camera.getPicture(function(imageData) {
+				$("#photoThumb").attr('src', "data:image/jpeg;base64," + imageData);
+				$("#productPhoto").attr('value', imageData);
+			}, function(message) {
+			    alert('Failed because: ' + message);
+			}, {
+				quality: 50, 
+				targetWidth: 800,
+			  destinationType: Camera.DestinationType.DATA_URL
+			}); 
+		}
+
+		// function scanBarcode() {
+		// 	window.plugins.barcodeScanner.scan(function(result) {
+		// 		$("#productBarcode").val(result.text);
+		//     }, function(error) {
+		//     	alert("Failed because: " + error);
+		//   	}
+		//   );				
+		// }
+
+		function saveProduct() {
+			var save = function(tx) {
+				var query = 'INSERT INTO Livro(photo, editora_id) VALUES (' + $('#productPhoto').val() + ', 1)';
+				console.log(query);
+				tx.executeSql(query);
+				alert('terminou a query');
+			}
+			alert('abriu db');
+			var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
+			db.transaction(save);
+			alert('salvou livro');
+		}
+	</script>
+</div>

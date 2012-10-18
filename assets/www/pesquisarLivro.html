@@ -1,0 +1,47 @@
+<div data-role="page" id="search">
+  <div data-role="header">
+    <a href="index.html" data-icon="arrow-l">Back</a>
+    <h1>Search Products</h1>
+  </div>
+
+  <div data-role="content">
+    <input type="text" id="title"></input>
+    <input type="button" value="Search By Title" onclick="searchByTitle()"></input>
+    <hr />
+    <input type="button" value="Search By Barcode" onclick="searchByBarcode()"></input>
+    <ul data-role="listview" data-inset="true" id="searchList"></ul>
+  </div>
+
+  <script type="text/javascript">
+    function searchByTitle() {
+      var title = $("#title").val();
+
+      $.getJSON(formatURL("products"), { title: title }, function(data) {
+
+        $("#searchList").html('');
+        $.each(data.products, function(index, product) {
+          $("#searchList").append('<li><a href="showProduct.html?id=' + product.id + '">' + product.title +'<img src="' + formatURL(product.photo_url) + '"/></a></li>');
+        });
+        $("#searchList").listview("refresh");
+      });
+    }
+
+    function searchByBarcode() {
+      window.plugins.barcodeScanner.scan(function(result) {
+        var barCode = result.text;
+
+        $.getJSON(formatURL("products"), { bar_code: barCode }, function(data) {
+
+          $("#searchList").html('');
+          $.each(data.products, function(index, product) {
+            $("#searchList").append('<li><a href="showProduct.html?id=' + product.id + '">' + product.title +'<img src="' + formatURL(product.photo_url) + '"/></a></li>');
+          });
+          $("#searchList").listview("refresh");
+        });
+      }, function(error) {
+          alert("Failed because: " + error);
+      });       
+    }
+  </script>
+
+</div>
