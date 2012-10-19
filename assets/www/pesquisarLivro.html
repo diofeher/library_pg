@@ -5,68 +5,42 @@
   </div>
 
   <div data-role="content">
-    <input type="text" id="title"></input>
-    <input type="button" value="Search By Title" onclick="searchByTitle()"></input>
-    <hr />
     <input type="button" value="Search By Barcode" onclick="searchByBarcode()"></input>
     <ul data-role="listview" data-inset="true" id="searchList"></ul>
   </div>
 
   <script type="text/javascript">
-    function loadAllBooks() {
-      function errorCB(err) {
-        alert(err.message);
-        return false;
-      };
-      function querySuccess(tx, results) {
-        var len = results.rows.length;
-        for (var i=0; i<len; i++){
-          var item = results.rows.item(i);
-          $("#searchList").append('<li><a href="mostrarLivro.html?id=' + item.id + '">' + item.photo + '"</a></li>');
-        }
-        $("#searchList").listview("refresh");
-        return true;
-      }
+    var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
+    function errorCB(err) {
+      alert(err.message);
+    };
 
-      function queryDB(tx) {
-        tx.executeSql('SELECT * FROM Livro', [], querySuccess, errorCB);
+    function successCB() {
+      var len = results.rows.length;
+      for (var i=0; i<len; i++){
+        var item = results.rows.item(i);
+      // var str = "";
+      // for (prop in item) {
+      //  str += prop + " value :" + item[prop] + "\n";
+      // }
+        $("#searchList").append('<li><a href="mostrarLivro.html?id="'+ item.id +'"><img src="data:image/jpeg;base64,' + item.photo + '"/></a></li>');
       }
-      $("#searchList").html('');
-      var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
-      db.transaction(queryDB, errorCB);
+    };
+
+    function searchByBarcode() {
+      window.plugins.barcodeScanner.scan(function(result) {
+        var barCode = result.text;
+
+        var search = function(tx) {
+          var query = "SELECT * FROM Livro WHERE barcode='" + barCode + "';";
+          alert(query);
+          tx.executeSql(query, errorCB, successCB);
+        };
+        db.transaction(search, errorCB);
+      }, function(error) {
+          alert("Failed because: " + error);
+      });       
     }
-
-    // function searchByTitle() {
-    //   var title = $("#title").val();
-
-    //   $.getJSON(formatURL("products"), { title: title }, function(data) {
-
-    //     $("#searchList").html('');
-    //     $.each(data.products, function(index, product) {
-    //       $("#searchList").append('<li><a href="showProduct.html?id=' + product.id + '">' + product.title +'<img src="' + formatURL(product.photo_url) + '"/></a></li>');
-    //     });
-    //     $("#searchList").listview("refresh");
-    //   });
-    // }
-
-    // function searchByBarcode() {
-    //   window.plugins.barcodeScanner.scan(function(result) {
-    //     var barCode = result.text;
-
-    //     $.getJSON(formatURL("products"), { bar_code: barCode }, function(data) {
-
-    //       $("#searchList").html('');
-    //       $.each(data.products, function(index, product) {
-    //         $("#searchList").append('<li><a href="showProduct.html?id=' + product.id + '">' + product.title +'<img src="' + formatURL(product.photo_url) + '"/></a></li>');
-    //       });
-    //       $("#searchList").listview("refresh");
-    //     });
-    //   }, function(error) {
-    //       alert("Failed because: " + error);
-    //   });       
-    // }
-
-    loadAllBooks();
   </script>
 
 </div>

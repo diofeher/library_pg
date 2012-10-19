@@ -7,15 +7,15 @@
 	<div data-role="content">
 		<form id="newProductForm">
 			<img width="50%" id="photoThumb"/>
-  		<input type="button" value="Take Photo" onclick="takePhoto()" />
-  		<input type="hidden" name="product[photo]" id="productPhoto" />
-	    <div data-role="fieldcontain">
-		    <select name="editora" id="editora">
-		    </select>
-	    </div>
-			<!-- <input type="button" value="Scan Barcode" onclick="scanBarcode()" /> -->
-			<!-- <input type="text" name="product[bar_code]" placeholder="Barcode" id="productBarcode" value="" /> -->
-	    <input type="hidden" name="base64" value="true" />
+	  		<input type="button" value="Take Photo" onclick="takePhoto()" />
+	  		<input type="hidden" name="product[photo]" id="productPhoto" />
+		    <div data-role="fieldcontain">
+			    <select name="editora" id="editora">
+			    </select>
+		    </div>
+			<input type="button" value="Scan Barcode" onclick="scanBarcode()" />
+			<input type="text" name="product[bar_code]" placeholder="Barcode" id="productBarcode" value="" />
+		    <input type="hidden" name="base64" value="true" />
 			<input type="button" value="Save" onclick="saveProduct()"/>
 		</form>
 	</div>
@@ -60,21 +60,22 @@
 	      	db.transaction(queryDB, errorCB);
 	    }
 
-		// function scanBarcode() {
-		// 	window.plugins.barcodeScanner.scan(function(result) {
-		// 		$("#productBarcode").val(result.text);
-		//     }, function(error) {
-		//     	alert("Failed because: " + error);
-		//   	}
-		//   );				
-		// }
+		function scanBarcode() {
+			alert(window.plugins.barcodeScanner.scan);
+			window.plugins.barcodeScanner.scan(function(result) {
+				$("#productBarcode").val(result.text);
+		    }, function(error) {
+		    	alert(error);
+		  	}
+		  );				
+		}
 
 		function saveProduct() {
 			var save = function(tx) {
 				var photo = $('#productPhoto').val(),
 					editora_id = $('#editora').val();
-				// var photo = '12312314asdadadsa123';
-				var query = "INSERT INTO Livro(editora_id, photo, barcode) VALUES ('" + editora_id + "', '" + photo + "', '1123123123')";
+					barcode = $('#productBarcode').val();
+				var query = "INSERT INTO Livro(editora_id, photo, barcode) VALUES ('" + editora_id + "', '" + photo + "', '"+ barcode +"')";
 				tx.executeSql(query);
 				alert('salvou livro');
 			}
