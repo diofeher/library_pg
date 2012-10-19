@@ -10,21 +10,31 @@
 	</div>
 
 	<script type="text/javascript">
+		var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
 		$("#price").live("pageshow", function(event){
 			var id = getParams()["id"];
+			id.replace(/[A-Za-z$-]/g, "").replace('?', '');
 
-			$.getJSON(formatResourceURL("prices", id), function(data) {
-				var price = data.price;
+			function carregarMapa() {
+				function querySuccess(tx, results) {
+					var len = results.rows.length;
+					for (var i=0; i<len; i++){
+						var item = results.rows.item(i);
+						alert(item.latitude);
+						displayMap(item.latitude, item.longitude, 'mapContainer');
+					}
+					return true;
+				}
 
-				$("#title").text(price.title);
-				$("#title").maskMoney();
+				function queryDB(tx) {
+					var query = 'SELECT * FROM Preco WHERE id='+id;
+					alert(query);
+					tx.executeSql(query, [], querySuccess, errorCB);
+				}
+				db.transaction(queryDB, errorCB);
+			}
 
-				$("#priceValue").text(price.value);
-				
-				$("#backButton").attr('href', 'showProduct.html?id=' + price.product_id);
-
-				displayMap(price.latitude, price.longitude, 'mapContainer');
-			});
-		});		
+			carregarMapa();
+		});	
 	</script>
 </div>

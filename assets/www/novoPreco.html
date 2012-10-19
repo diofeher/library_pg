@@ -39,6 +39,7 @@
 					latitude = $('#latitude').val(),
 					longitude = $('#longitude').val(),
 					livro_id = $("#product_id").val();
+				livro_id.replace(/[A-Za-z$-]/g, "").replace('?', '');
 				var query = "INSERT INTO Preco (price, latitude, longitude, livro_id) VALUES ('" + price + "', '" + latitude + "', '"+ longitude +"', "+ livro_id +")";
 				alert(query);
 				tx.executeSql(query, errorCB);

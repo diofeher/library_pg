@@ -28,6 +28,7 @@ function populateDB(tx) {
 
 function errorCB(err) {
     alert(err.message);
+    return false;
 }
 
 function successCB() {
@@ -49,6 +50,25 @@ function getParams() {
     vars[hash[0]] = hash[1];
   }
   return vars;
+}
+
+
+function displayMap(lat, lng, element) {
+  var position = new google.maps.LatLng(lat, lng);
+    
+  var options = {
+    center: position,
+    zoom: 16,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  
+  var map = new google.maps.Map(document.getElementById(element), options);
+    
+  var marker = new google.maps.Marker({
+    position: position,
+    map: map,
+    title: "Price"
+  });
 }
 
 document.addEventListener("deviceready", onDeviceReady, false);

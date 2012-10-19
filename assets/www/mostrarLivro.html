@@ -14,9 +14,7 @@
       <div style="clear:both"></div>
     <p id="productName"></p>
     <a href="novoPreco.html" id="newPriceButton" data-role="button">Add new price</a>
-    <ul data-role="listview" data-inset="true" id="mostrarPrecos"> 
-      <li><a href="mostrarMapa.html?id=3">1233</a></li>
-    </ul>
+    <ul data-role="listview" data-inset="true" id="mostrarPrecos"> </ul>
   </div>
   <script type="text/javascript">
     var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
@@ -36,8 +34,8 @@
             var len = results.rows.length;
             for (var i=0; i<len; i++){
                 var item = results.rows.item(i);
-                alert(item.price);
-                $("#mostrarPrecos").append('<li><a href="mostrarMapa.html?id=' + item.id + '">' + item.price + '</a></li>');
+                var item_html = '<li><a href="mostrarPreco.html?id=' + item.id + '">' + item.price + '</a></li>';
+                $("#mostrarPrecos").append(item_html);
             }
           $("#mostrarPrecos").listview("refresh");
           return true;
