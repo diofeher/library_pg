@@ -1,6 +1,7 @@
 <div data-role="page" id="newProduct">
 	<div data-role="header">
 		<h1>Novo Livro</h1>
+		<a data-rel="back" href="index.html">Voltar</a>
 	</div>
 
 	<div data-role="content">
@@ -8,7 +9,10 @@
 			<img width="50%" id="photoThumb"/>
   		<input type="button" value="Take Photo" onclick="takePhoto()" />
   		<input type="hidden" name="product[photo]" id="productPhoto" />
-	    <input type="text" name="product[title]" placeholder="Title" id="productTitle" value="" />
+	    <div data-role="fieldcontain">
+		    <select name="editora" id="editora">
+		    </select>
+	    </div>
 			<!-- <input type="button" value="Scan Barcode" onclick="scanBarcode()" /> -->
 			<!-- <input type="text" name="product[bar_code]" placeholder="Barcode" id="productBarcode" value="" /> -->
 	    <input type="hidden" name="base64" value="true" />
@@ -17,6 +21,7 @@
 	</div>
 
 	<script type="text/javascript">
+		var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
 		function takePhoto() {
 			navigator.camera.getPicture(function(imageData) {
 				$("#photoThumb").attr('src', "data:image/jpeg;base64," + imageData);
@@ -30,6 +35,31 @@
 			}); 
 		}
 
+	    function loadAllEditoras() {
+	    	function errorCB(err) {
+	      		alert(err.message);
+	        	return false;
+	      	};
+	      	function querySuccess(tx, results) {
+	        	var len = results.rows.length;
+	        	for (var i=0; i<len; i++){
+	          		var item = results.rows.item(i);
+					// var str = "";
+					// for (prop in item) {
+					// 	str += prop + " value :" + item[prop] + "\n";
+					// }
+	          		$("#editora").append('<option value="' + item.id + '">' + item.name + '</option>');
+	        	}
+	        // $("#searchList").listview("refresh");
+	        return true;
+	      }
+
+	    	function queryDB(tx) {
+	        	tx.executeSql('SELECT * FROM Editora', [], querySuccess, errorCB);
+	      	}
+	      	db.transaction(queryDB, errorCB);
+	    }
+
 		// function scanBarcode() {
 		// 	window.plugins.barcodeScanner.scan(function(result) {
 		// 		$("#productBarcode").val(result.text);
@@ -41,15 +71,21 @@
 
 		function saveProduct() {
 			var save = function(tx) {
-				var query = 'INSERT INTO Livro(photo, editora_id) VALUES (' + $('#productPhoto').val() + ', 1)';
-				console.log(query);
+				var photo = $('#productPhoto').val(),
+					editora_id = $('#editora').val();
+				// var photo = '12312314asdadadsa123';
+				var query = "INSERT INTO Livro(editora_id, photo, barcode) VALUES ('" + editora_id + "', '" + photo + "', '1123123123')";
 				tx.executeSql(query);
-				alert('terminou a query');
+				alert('salvou livro');
 			}
-			alert('abriu db');
-			var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
 			db.transaction(save);
-			alert('salvou livro');
+			$.mobile.changePage('index.html', { transition: "slide", reverse: true, });
 		}
+
+		function init() {
+			loadAllEditoras();
+		}
+
+		init();
 	</script>
 </div>

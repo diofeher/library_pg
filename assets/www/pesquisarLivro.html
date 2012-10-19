@@ -13,35 +13,60 @@
   </div>
 
   <script type="text/javascript">
-    function searchByTitle() {
-      var title = $("#title").val();
-
-      $.getJSON(formatURL("products"), { title: title }, function(data) {
-
-        $("#searchList").html('');
-        $.each(data.products, function(index, product) {
-          $("#searchList").append('<li><a href="showProduct.html?id=' + product.id + '">' + product.title +'<img src="' + formatURL(product.photo_url) + '"/></a></li>');
-        });
+    function loadAllBooks() {
+      function errorCB(err) {
+        alert(err.message);
+        return false;
+      };
+      function querySuccess(tx, results) {
+        var len = results.rows.length;
+        for (var i=0; i<len; i++){
+          var item = results.rows.item(i);
+          $("#searchList").append('<li><a href="mostrarLivro.html?id=' + item.id + '">' + item.photo + '"</a></li>');
+        }
         $("#searchList").listview("refresh");
-      });
+        return true;
+      }
+
+      function queryDB(tx) {
+        tx.executeSql('SELECT * FROM Livro', [], querySuccess, errorCB);
+      }
+      $("#searchList").html('');
+      var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
+      db.transaction(queryDB, errorCB);
     }
 
-    function searchByBarcode() {
-      window.plugins.barcodeScanner.scan(function(result) {
-        var barCode = result.text;
+    // function searchByTitle() {
+    //   var title = $("#title").val();
 
-        $.getJSON(formatURL("products"), { bar_code: barCode }, function(data) {
+    //   $.getJSON(formatURL("products"), { title: title }, function(data) {
 
-          $("#searchList").html('');
-          $.each(data.products, function(index, product) {
-            $("#searchList").append('<li><a href="showProduct.html?id=' + product.id + '">' + product.title +'<img src="' + formatURL(product.photo_url) + '"/></a></li>');
-          });
-          $("#searchList").listview("refresh");
-        });
-      }, function(error) {
-          alert("Failed because: " + error);
-      });       
-    }
+    //     $("#searchList").html('');
+    //     $.each(data.products, function(index, product) {
+    //       $("#searchList").append('<li><a href="showProduct.html?id=' + product.id + '">' + product.title +'<img src="' + formatURL(product.photo_url) + '"/></a></li>');
+    //     });
+    //     $("#searchList").listview("refresh");
+    //   });
+    // }
+
+    // function searchByBarcode() {
+    //   window.plugins.barcodeScanner.scan(function(result) {
+    //     var barCode = result.text;
+
+    //     $.getJSON(formatURL("products"), { bar_code: barCode }, function(data) {
+
+    //       $("#searchList").html('');
+    //       $.each(data.products, function(index, product) {
+    //         $("#searchList").append('<li><a href="showProduct.html?id=' + product.id + '">' + product.title +'<img src="' + formatURL(product.photo_url) + '"/></a></li>');
+    //       });
+    //       $("#searchList").listview("refresh");
+    //     });
+    //   }, function(error) {
+    //       alert("Failed because: " + error);
+    //   });       
+    // }
+
+    loadAllBooks();
   </script>
 
 </div>
