@@ -1,0 +1,60 @@
+<div data-role="page" id="newPrice">
+	<div data-role="header">
+		<a href="index.html" data-icon="arrow-l">Back</a>
+		<h1>New Price</h1>
+	</div>
+
+	<div data-role="content">
+		<form id="newPriceForm">
+			<label for="value">Price</label>
+			<input type="text" id="value" name="price[value]"></input>
+			<input type="hidden" id="product_id" name="price[product_id]"></input>
+			<label for="latitude">Latitude</label>
+			<input type="text" id="latitude" name="price[latitude]"></input>
+			<label for="longitude">Longitude</label>
+			<input type="text" id="longitude" name="price[longitude]"></input>
+			<input type="button" value="Get Current Position" onclick="getLocation()"></input>
+			<input type="button" value="Save" onclick="savePrice()"></input>
+		</form>
+	</div>
+	<script type="text/javascript">
+		var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
+		$('#newPriceForm').submit(function(){
+			savePrice();
+		});
+
+		$("#newPrice").live("pageshow", function(event){
+			var product_id = getParams()["id"];
+			product_id.replace(/[A-Za-z$-]/g, "").replace('?', '');
+			$("#product_id").val(product_id);
+		});
+		
+		function errorCB(err) {
+			alert('erro ' + err.message);
+		};	
+		
+		function savePrice() {
+			var save = function(tx) {
+				var price = $('#value').val(),
+					latitude = $('#latitude').val(),
+					longitude = $('#longitude').val(),
+					livro_id = $("#product_id").val();
+				var query = "INSERT INTO Preco (price, latitude, longitude, livro_id) VALUES ('" + price + "', '" + latitude + "', '"+ longitude +"', "+ livro_id +")";
+				alert(query);
+				tx.executeSql(query, errorCB);
+			}
+			db.transaction(save, errorCB);
+			$.mobile.changePage('index.html', { transition: "slide", reverse: true, });
+		}
+		
+		function getLocation(){
+			navigator.geolocation.getCurrentPosition(function(position){
+				$("#latitude").val(position.coords.latitude);
+				$("#longitude").val(position.coords.longitude);
+			}, function(error){
+			   alert('code: '    + error.code    + '\n' +
+		             'message: ' + error.message + '\n');				
+			});
+		}
+	</script>
+</div>

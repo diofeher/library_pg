@@ -1,0 +1,30 @@
+<div data-role="page" id="price">
+	<div data-role="header">
+		<a href="index.html" data-icon="arrow-l" id="backButton">Back</a>
+		<h1 id="title">Price</h1>
+	</div>
+
+	<div data-role="content">
+		<h1 id="priceValue"></h1>
+		<div id="mapContainer" style="width:100%; height:300px;"></div>
+	</div>
+
+	<script type="text/javascript">
+		$("#price").live("pageshow", function(event){
+			var id = getParams()["id"];
+
+			$.getJSON(formatResourceURL("prices", id), function(data) {
+				var price = data.price;
+
+				$("#title").text(price.title);
+				$("#title").maskMoney();
+
+				$("#priceValue").text(price.value);
+				
+				$("#backButton").attr('href', 'showProduct.html?id=' + price.product_id);
+
+				displayMap(price.latitude, price.longitude, 'mapContainer');
+			});
+		});		
+	</script>
+</div>
