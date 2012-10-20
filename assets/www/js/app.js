@@ -19,11 +19,11 @@ function populateDB(tx) {
     tx.executeSql('INSERT INTO Autor(name) VALUES ("Mc Sheldon")');
     // criar livro
     tx.executeSql('CREATE TABLE Livro (id INTEGER PRIMARY KEY AUTOINCREMENT, barcode TEXT NOT NULL, editora_id INTEGER NOT NULL, photo TEXT NOT NULL, FOREIGN KEY(editora_id) REFERENCES Editora(id) )');
-    tx.executeSql("INSERT INTO Livro(photo, barcode, editora_id) VALUES ('12312312', 'diogenes123123lindo', 1)");
+    tx.executeSql("INSERT INTO Livro(photo, barcode, editora_id) VALUES ('12312312', '1', 1)");
     // criar preco
     tx.executeSql('CREATE TABLE Preco (id INTEGER PRIMARY KEY AUTOINCREMENT, price TEXT NOT NULL, livro_id INTEGER NOT NULL, latitude TEXT NOT NULL, longitude TEXT NOT NULL, FOREIGN KEY(livro_id) REFERENCES Livro(id) )');
     tx.executeSql("INSERT INTO Preco (price, latitude, longitude, livro_id) VALUES ('123', '-7.1308256', '-34.87224414', 1)");
-    tx.executeSql("INSERT INTO Preco (price, latitude, longitude, livro_id) VALUES ('111', '-7.1308254', '-34.87224412', 1)");
+    tx.executeSql("INSERT INTO Preco (price, latitude, longitude, livro_id) VALUES ('321', '-7.1308254', '-34.87224412', 1)");
 }
 
 function errorCB(err) {

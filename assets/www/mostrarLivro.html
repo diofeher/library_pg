@@ -1,7 +1,7 @@
 <div data-role="page" id="productDetails">
   <div data-role="header">
-    <a href="index.html" data-icon="arrow-l">Back</a>
-    <h1 id="titleName">Product</h1>
+    <a href="index.html" data-icon="arrow-l">Voltar</a>
+    <h1 id="titleName">Livro</h1>
   </div>
 
   <div data-role="content">
@@ -12,8 +12,7 @@
          <p id="barcode" style="color:#CCC"></p>
       </div>
       <div style="clear:both"></div>
-    <p id="productName"></p>
-    <a href="novoPreco.html" id="newPriceButton" data-role="button">Add new price</a>
+    <a href="novoPreco.html" id="newPriceButton" data-role="button">Adicionar preço</a>
     <ul data-role="listview" data-inset="true" id="mostrarPrecos"> </ul>
   </div>
   <script type="text/javascript">
@@ -25,10 +24,6 @@
       elem.attr('href', new_href);
 
       function carregarPrecos() {
-        function errorCB(err) {
-            alert(err.message);
-            return false;
-          };
           function querySuccess(tx, results) {
             $('#mostrarPrecos').html('');
             var len = results.rows.length;
@@ -42,7 +37,7 @@
         }
 
         function queryDB(tx) {
-            tx.executeSql('SELECT * FROM Preco WHERE id='+id, [], querySuccess, errorCB);
+            tx.executeSql('SELECT * FROM Preco WHERE livro_id='+id, [], querySuccess, errorCB);
           }
           db.transaction(queryDB, errorCB);
       }

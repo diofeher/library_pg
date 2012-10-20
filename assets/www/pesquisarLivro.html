@@ -1,45 +1,47 @@
 <div data-role="page" id="search">
   <div data-role="header">
-    <a href="index.html" data-icon="arrow-l">Back</a>
-    <h1>Search Products</h1>
+    <a href="index.html" data-icon="arrow-l">Voltar</a>
+    <h1>Pesquisar Livro</h1>
   </div>
 
   <div data-role="content">
-    <input type="button" value="Search By Barcode" onclick="searchByBarcode()"></input>
+    <input type="text" name="product[bar_code]" placeholder="Codigo de barra" id="productBarcode" value="" />
+    <input type="button" value="Pesquisar por código de barras" onclick="searchByBarcode()"></input>
+    <input type="button" value="Pesquisar por input" onclick="searchByInput()"></input>
     <ul data-role="listview" data-inset="true" id="searchList"></ul>
   </div>
 
   <script type="text/javascript">
     var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
-    function errorCB(err) {
-      alert(err.message);
-    };
-
-    function successCB() {
+    function successCB(tx, results) {
       var len = results.rows.length;
+      $("#searchList").html('');
       for (var i=0; i<len; i++){
         var item = results.rows.item(i);
-      // var str = "";
-      // for (prop in item) {
-      //  str += prop + " value :" + item[prop] + "\n";
-      // }
-        $("#searchList").append('<li><a href="mostrarLivro.html?id="'+ item.id +'"><img src="data:image/jpeg;base64,' + item.photo + '"/></a></li>');
+        var html = '<li><a href="mostrarLivro.html?id='+ item.id +'"><img src="data:image/jpeg;base64,' + item.photo + '"/></a></li>';
+        $("#searchList").append(html);
       }
+      $("#searchList").listview("refresh");
     };
 
-    function searchByBarcode() {
+    function searchByBarcode(code) {
       window.plugins.barcodeScanner.scan(function(result) {
-        var barCode = result.text;
-
-        var search = function(tx) {
-          var query = "SELECT * FROM Livro WHERE barcode='" + barCode + "';";
-          alert(query);
-          tx.executeSql(query, errorCB, successCB);
-        };
-        db.transaction(search, errorCB);
+        searchBy(result.text);
       }, function(error) {
-          alert("Failed because: " + error);
-      });       
+        alert("Falhou: " + error);
+      });
+    }
+
+    function searchByInput() {
+      searchBy($('#productBarcode').val());
+    }
+
+    function searchBy(code) {
+      var search = function(tx) {
+        var query = "SELECT * FROM Livro WHERE barcode='" + code + "';";
+        tx.executeSql(query, [], successCB, errorCB);
+      };
+      db.transaction(search, errorCB);
     }
   </script>
 

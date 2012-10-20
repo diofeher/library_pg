@@ -1,7 +1,7 @@
 <div data-role="page" id="price">
 	<div data-role="header">
-		<a href="index.html" data-icon="arrow-l" id="backButton">Back</a>
-		<h1 id="title">Price</h1>
+		<a href="index.html" data-icon="arrow-l" id="backButton">Voltar</a>
+		<h1 id="title">Preço</h1>
 	</div>
 
 	<div data-role="content">
@@ -20,7 +20,6 @@
 					var len = results.rows.length;
 					for (var i=0; i<len; i++){
 						var item = results.rows.item(i);
-						alert(item.latitude);
 						displayMap(item.latitude, item.longitude, 'mapContainer');
 					}
 					return true;
@@ -28,7 +27,6 @@
 
 				function queryDB(tx) {
 					var query = 'SELECT * FROM Preco WHERE id='+id;
-					alert(query);
 					tx.executeSql(query, [], querySuccess, errorCB);
 				}
 				db.transaction(queryDB, errorCB);
